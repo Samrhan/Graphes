@@ -5,7 +5,12 @@ from graphe import Graph
 class Main:
     def __init__(self):
         self.graph_number = self.ask_user()
-        self.graph = Graph(self.graph_number)
+
+        try:
+            self.graph = Graph(self.graph_number)
+        except Exception as error:
+            print(error.args)
+            self.ask_user()
 
     def ask_user(self):
         n_graph = self.get_graph_number()
