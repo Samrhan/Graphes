@@ -1,10 +1,11 @@
 import os
+from graphe import Graph
 
 
 class Main:
     def __init__(self):
         self.graph_number = self.ask_user()
-        print(self.graph_number)
+        self.graph = Graph(self.graph_number)
 
     def ask_user(self):
         n_graph = self.get_graph_number()
