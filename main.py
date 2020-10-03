@@ -4,14 +4,17 @@ from graphe import Graph
 
 class Main:
     def __init__(self):
-        self.graph_number = self.ask_user()
+        self.graph = 0
 
-        # Création du graphe
-        try:
-            self.graph = Graph(self.graph_number)
-        except Exception as error:
-            print(error.args[0])
-            self.ask_user()
+        while self.graph == 0:
+            self.graph_number = self.ask_user()
+            # Création du graphe
+            try:
+                self.graph = Graph(self.graph_number)
+            except Exception as error:
+                print(error.args[0])
+
+        print(self.graph)
 
     def ask_user(self):
         """Saisie utilisateur"""
