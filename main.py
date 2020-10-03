@@ -10,7 +10,7 @@ class Main:
         try:
             self.graph = Graph(self.graph_number)
         except Exception as error:
-            print(error.args)
+            print(error.args[0])
             self.ask_user()
 
     def ask_user(self):
