@@ -90,7 +90,6 @@ class Graph:
             beautiful += '\n'
         return beautiful
 
-
     def __repr__(self):
         """Surcharge de l'affichage"""
         to_print = "----- Matrice d'adjacence -----\n\n"
