@@ -1,4 +1,5 @@
 class Graph:
+    """Classe représentant un graphe"""
     def __init__(self, _num_graph):
         self.num_graph = _num_graph
         self.file_name = f"graphes/{self.num_graph}.txt"
@@ -10,6 +11,7 @@ class Graph:
         self.read_file()
 
     def read_file(self):
+        """Lecture d'un fichier stockant un graphe"""
         with open(self.file_name) as file:
             line = file.readline()
             n = 0
