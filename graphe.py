@@ -22,10 +22,17 @@ class Graph:
         self.m_adjacence = []
         self.m_valeur = []
 
+        self.m_floyd_l = []
+        self.m_floyd_p = []
+
         self.gen_m_adjacence()
         self.gen_m_valeur()
 
         self.floyd_warshall()
+
+        self.circuit = self.circuit_detection()
+
+    # print(self.path(0, 9))
 
     def read_file(self):
         """Lecture d'un fichier stockant un graphe"""
@@ -94,28 +101,78 @@ class Graph:
         return beautiful
 
     def floyd_warshall(self):
-        # adj_mat = dist = map(lambda i: map(lambda j: j, i), self.m_adjacence)
-        adj_mat = copy.deepcopy(self.m_valeur)
-        for i, row in enumerate(adj_mat):
+        """Execute l'algorithme de Floyd-Warshall sur le graphe"""
+
+        # Génération des matrices
+        self.m_floyd_l = copy.deepcopy(self.m_valeur)
+        for i, row in enumerate(self.m_floyd_l):
+            self.m_floyd_p.append([])
             for j, val in enumerate(row):
                 if i == j:
-                    adj_mat[i][j] = 0
+                    self.m_floyd_l[i][j] = 0
                 else:
-                    if adj_mat[i][j] == '*':
-                        adj_mat[i][j] = 10000
+                    if self.m_floyd_l[i][j] == '*':
+                        self.m_floyd_l[i][j] = 10000
+                self.m_floyd_p[i].append(i + 1)
+
+        # Algorithme de Floyd Warhsall
+        for k in range(self.n_sommets):
+            for i in range(self.n_sommets):
+                for j in range(self.n_sommets):
+                    if self.m_floyd_l[i][k] + self.m_floyd_l[k][j] < self.m_floyd_l[i][j]:
+                        self.m_floyd_l[i][j] = self.m_floyd_l[i][k] + self.m_floyd_l[k][j]
+                        self.m_floyd_p[i][j] = self.m_floyd_p[k][j]
 
         for i in range(self.n_sommets):
             for j in range(self.n_sommets):
-                for k in range(self.n_sommets):
-                    if adj_mat[i][k] != 10000 & adj_mat[k][j] != 10000:  # Des fois on a des valeurs négative, ce qui change 10000. Pas pratique pour remplacer après
-                        adj_mat[i][j] = min(adj_mat[i][j], adj_mat[i][k] + adj_mat[k][j])
+                if self.m_floyd_l[i][j] == 10000:
+                    self.m_floyd_l[i][j] = '*'
 
-        for i in range(self.n_sommets):
-            for j in range(self.n_sommets):
-                if adj_mat[i][j] == 10000:
-                    adj_mat[i][j] = '*'
+    def circuit_detection(self):
+        """Detection de circuit"""
 
-        print(self.stringify_mat(adj_mat))
+        # Génération d'une matrice temporaire
+        tmp = copy.deepcopy(self.m_adjacence)
+        done = []
+        todo = [i for i in range(self.n_sommets)]
+        todo_prec = []
+        stop_condition = True
+        while stop_condition:
+            todo_prec.clear()
+            todo_prec = todo.copy()
+            for i, sommet in enumerate(todo):
+                pred = 0
+                for j in range(self.n_sommets):
+                    if tmp[j][sommet] == 1:
+                        pred += 1
+
+                if pred == 0:
+                    done.append(sommet)
+
+            for i, sommet in enumerate(done):
+                for j in range(self.n_sommets):
+                    tmp[j][sommet] = -1
+                    tmp[sommet][j] = -1
+
+            for i in done:
+                if i in todo:
+                    todo.remove(i)
+            stop_condition = not todo_prec == todo
+        if len(todo) > 0:
+            return True
+        else:
+            return False
+
+    def path(self, start, end):
+        """Calcul du chemin le plus court, à l'aide de l'alorithme de Floyd-Warshall"""
+        if self.m_floyd_p[start][end] == 0:
+            return []
+        path = [start]
+        while start != end:
+            start = self.m_floyd_p[start][end]
+            path.append(start)
+
+        return path
 
     def __repr__(self):
         """Surcharge de l'affichage"""
@@ -123,5 +180,19 @@ class Graph:
         to_print += self.stringify_mat(self.m_adjacence)
         to_print += "\n\n----- Matrice des valeurs -----\n\n"
         to_print += self.stringify_mat(self.m_valeur)
-
+        to_print += "\n\n----- Floyd-Warshall Matrice L-----\n\n"
+        to_print += self.stringify_mat(self.m_floyd_l)
+        to_print += "\n\n----- Floyd-Warshall Matrice P-----\n\n"
+        to_print += self.stringify_mat(self.m_floyd_p)
+        to_print += "\n\nIl y a un ou plusieurs circuits absorbants\n\n" if self.circuit else "\n\nIl n'y a pas de circuit absorbant\n\n"
         return to_print
+
+    @property
+    def has_circuit(self):
+        """Getter de si il y a un circuit"""
+        return self.circuit
+
+    @property
+    def sommets(self):
+        """Getter du nombre de sommet"""
+        return self.n_sommets

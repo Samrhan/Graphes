@@ -4,17 +4,35 @@ from graphe import Graph
 
 class Main:
     def __init__(self):
-        self.graph = 0
-
-        while self.graph == 0:
-            self.graph_number = self.ask_user()
-            # Création du graphe
-            try:
-                self.graph = Graph(self.graph_number)
-            except Exception as error:
-                print(error.args[0])
-
-        print(self.graph)
+        correct_input = False
+        self.graph_number = -1
+        while self.graph_number != 0:
+            while not correct_input:
+                self.graph_number = self.ask_user()
+                if self.graph_number == 0:
+                    break
+                # Création du graphe
+                try:
+                    graph = Graph(self.graph_number)
+                    correct_input = True
+                    print(graph)
+                    if not graph.has_circuit:
+                        valid_entries = False
+                        while not valid_entries:
+                            try:
+                                n = ord(input("Voulez-vous calculer les chemins les plus courts ? (Y/N)"))
+                                if n == 89 or n == 121:
+                                    self.path(graph)
+                                elif n == 110 or n == 78:
+                                    valid_entries = True
+                                else:
+                                    raise TypeError
+                            except TypeError:
+                                continue
+                except Exception as error:
+                    # Permet de savoir où est l'erreur exactement, avec une hierarchie
+                    print(error.args[0])
+            correct_input = False
 
     def ask_user(self):
         """Saisie utilisateur"""
@@ -27,8 +45,8 @@ class Main:
             # On boucle tant que l'utilisateur entre des valeurs incorrectes
             try:
                 # utiliser int() directement sur la saisie évite la vulnérabilité de la fonction input
-                answer = int(input(f"Choisissez le numéro du graphe (1-{n_graph})"))
-                if answer <= 0 or answer > n_graph:
+                answer = int(input(f"Choisissez le numéro du graphe (1-{n_graph}), 0 pour quitter\n"))
+                if answer < 0 or answer > n_graph:
                     # On lève une erreur si l'utilisateur entre un numéro incorrect
                     raise ValueError
                 else:
@@ -38,6 +56,37 @@ class Main:
                 print(f"Entrez un chiffre entre 1 et {n_graph} !")
 
         return answer
+
+    def path(self, graph):
+        correct_answer = False
+        start = -1
+        end = -1
+
+        while not correct_answer:
+            try:
+                start = int(input(f"Choisissez le sommet de départ (0-{graph.sommets-1})\n"))
+                if start < 0 or start >= graph.sommets:
+                    raise ValueError
+                else:
+                    correct_answer = True
+            except ValueError:
+                print(f"Entrez un chiffre entre 1 et {graph.sommets} !")
+        correct_answer = False
+        while not correct_answer:
+            try:
+                end = int(input(f"Choisissez le sommet d'arrivé ({start+1}-{graph.sommets-1})\n"))
+                if end < start or end >= graph.sommets:
+                    raise ValueError
+                else:
+                    correct_answer = True
+            except ValueError:
+                print(f"Entrez un chiffre entre {start+1} et {graph.sommets} !")
+
+        path = graph.path(start, end)
+        pretty_print = ""
+        for i in path:
+            pretty_print += f'{i} => '
+        print(pretty_print)
 
     @staticmethod
     def get_graph_number():
