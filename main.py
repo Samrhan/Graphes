@@ -64,7 +64,7 @@ class Main:
 
         while not correct_answer:
             try:
-                start = int(input(f"Choisissez le sommet de départ (0-{graph.sommets-1})\n"))
+                start = int(input(f"Choisissez le sommet de départ (0-{graph.sommets - 1})\n"))
                 if start < 0 or start >= graph.sommets:
                     raise ValueError
                 else:
@@ -74,23 +74,35 @@ class Main:
         correct_answer = False
         while not correct_answer:
             try:
-                end = int(input(f"Choisissez le sommet d'arrivé ({start+1}-{graph.sommets-1})\n"))
-                if end < start or end >= graph.sommets:
+                end = int(input(f"Choisissez le sommet d'arrivé (0-{graph.sommets - 1})\n"))
+                if end < 0 or end >= graph.sommets:
                     raise ValueError
                 else:
                     correct_answer = True
             except ValueError:
-                print(f"Entrez un chiffre entre {start+1} et {graph.sommets} !")
+                print(f"Entrez un chiffre entre 0 et {graph.sommets} !")
 
         path = graph.path(start, end)
-        pretty_print = ""
-        for i in path:
-            pretty_print += f'{i} => '
+        pretty_print = "Chemin le plus court : "
+        if path == []:
+            pretty_print = "Il n'y a pas de chemin possible"
+        else:
+            for (i, sommet) in enumerate(path):
+                if sommet != path[-1]:
+                    pretty_print += f'{sommet} => '
+                else:
+                    pretty_print += f'{sommet}'
         print(pretty_print)
 
     @staticmethod
     def get_graph_number():
         return len(os.listdir('graphes'))
 
+    def traces(self):
+        for i in range(self.get_graph_number()):
+            with open(f'traces/{i + 1}.txt', 'w') as file:
+                graphe = Graph(i + 1)
+                print(graphe, file=file)
 
-Main()
+
+main = Main()

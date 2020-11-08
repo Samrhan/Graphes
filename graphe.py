@@ -87,18 +87,18 @@ class Graph:
 
     def stringify_mat(self, _m):
 
-        beautiful = "\t"
+        pretty_print = "\t"
 
         for i in range(self.n_sommets):
-            beautiful += f"{i}\t"
-        beautiful += '\n'
+            pretty_print += f"{i}\t"
+        pretty_print += '\n'
 
         for i in range(self.n_sommets):
-            beautiful += f"{i} "
+            pretty_print += f"{i} "
             for j in range(self.n_sommets):
-                beautiful += f"\t{_m[i][j]}"
-            beautiful += '\n'
-        return beautiful
+                pretty_print += f"\t{_m[i][j]}"
+            pretty_print += '\n'
+        return pretty_print
 
     def floyd_warshall(self):
         """Execute l'algorithme de Floyd-Warshall sur le graphe"""
@@ -110,18 +110,22 @@ class Graph:
             for j, val in enumerate(row):
                 if i == j:
                     self.m_floyd_l[i][j] = 0
+                    self.m_floyd_p[i].append(i)
                 else:
                     if self.m_floyd_l[i][j] == '*':
                         self.m_floyd_l[i][j] = 10000
-                self.m_floyd_p[i].append(i + 1)
+                self.m_floyd_p[i].append('*')
+        for i in self.l_arcs:
+            self.m_floyd_p[i.init][i.fin] = i.init
 
         # Algorithme de Floyd Warhsall
         for k in range(self.n_sommets):
-            for i in range(self.n_sommets):
-                for j in range(self.n_sommets):
-                    if self.m_floyd_l[i][k] + self.m_floyd_l[k][j] < self.m_floyd_l[i][j]:
-                        self.m_floyd_l[i][j] = self.m_floyd_l[i][k] + self.m_floyd_l[k][j]
-                        self.m_floyd_p[i][j] = self.m_floyd_p[k][j]
+            for j in range(self.n_sommets):
+                for i in range(self.n_sommets):
+                    if self.m_floyd_l[i][k] != 10000 and self.m_floyd_l[k][j] != 10000:
+                        if self.m_floyd_l[i][k] + self.m_floyd_l[k][j] < self.m_floyd_l[i][j]:
+                            self.m_floyd_l[i][j] = self.m_floyd_l[i][k] + self.m_floyd_l[k][j]
+                            self.m_floyd_p[i][j] = self.m_floyd_p[k][j]
 
         for i in range(self.n_sommets):
             for j in range(self.n_sommets):
@@ -165,14 +169,16 @@ class Graph:
 
     def path(self, start, end):
         """Calcul du chemin le plus court, à l'aide de l'alorithme de Floyd-Warshall"""
-        if self.m_floyd_p[start][end] == 0:
-            return []
-        path = [start]
-        while start != end:
-            start = self.m_floyd_p[start][end]
-            path.append(start)
 
-        return path
+        if self.m_floyd_p[start][end] == '*':
+            return []
+        else:
+            chemin = [end]
+            while start != end:
+                end = self.m_floyd_p[start][end]
+                chemin.append(end)
+            chemin.reverse()
+            return chemin
 
     def __repr__(self):
         """Surcharge de l'affichage"""
