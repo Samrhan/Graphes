@@ -1,0 +1,39 @@
+----- Matrice d'adjacence -----
+
+	0	1	2	3	
+0 	0	1	1	0
+1 	0	0	1	1
+2 	0	0	0	1
+3 	0	0	0	0
+
+
+----- Matrice des valeurs -----
+
+	0	1	2	3	
+0 	*	1	5	*
+1 	*	*	-3	5
+2 	*	*	*	2
+3 	*	*	*	*
+
+
+----- Floyd-Warshall Matrice L-----
+
+	0	1	2	3	
+0 	0	1	-2	0
+1 	*	0	-3	-1
+2 	*	*	0	2
+3 	*	*	*	0
+
+
+----- Floyd-Warshall Matrice P-----
+
+	0	1	2	3	
+0 	0	0	1	2
+1 	*	1	1	2
+2 	*	*	2	2
+3 	*	*	*	3
+
+
+Il n'y a pas de circuit absorbant
+
+
