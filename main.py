@@ -100,9 +100,25 @@ class Main:
 
     def traces(self):
         for i in range(self.get_graph_number()):
-            with open(f'traces/{i + 1}.txt', 'w') as file:
-                graphe = Graph(i + 1)
-                print(graphe, file=file)
+            with open(f'traces/B6_{i + 1}.txt', 'w') as file:
+                graph = Graph(i + 1)
+                print(graph, file=file)
+                if not graph.circuit :
+                    for i in range(graph.sommets):
+                        for j in range(graph.sommets):
+                            if i != graph.sommets - j - 1:
+                                path = graph.path(i, graph.sommets - j - 1)
+                                pretty_print = f"Chemin le plus court de {i} vers {graph.sommets - j - 1} : "
+                                if not path:
+                                    pretty_print = f"Il n'y a pas de chemin possible de {i} vers {graph.sommets - j - 1}"
+                                else:
+                                    for (i, sommet) in enumerate(path):
+                                        if sommet != path[-1]:
+                                            pretty_print += f'{sommet} => '
+                                        else:
+                                            pretty_print += f'{sommet}'
+                                print(pretty_print, file=file)
 
 
 main = Main()
+main.traces()

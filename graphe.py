@@ -7,7 +7,7 @@ class Graph:
 
     def __init__(self, _num_graph):
         self.num_graph = _num_graph
-        self.file_name = f"graphes/{self.num_graph}.txt"
+        self.file_name = f"graphes/B6_{self.num_graph}.txt"
 
         # Propriétés du graphe
         self.n_sommets = 0
@@ -27,12 +27,8 @@ class Graph:
 
         self.gen_m_adjacence()
         self.gen_m_valeur()
-
+        self.circuit = False
         self.floyd_warshall()
-
-        self.circuit = self.circuit_detection()
-
-    # print(self.path(0, 9))
 
     def read_file(self):
         """Lecture d'un fichier stockant un graphe"""
@@ -126,46 +122,13 @@ class Graph:
                         if self.m_floyd_l[i][k] + self.m_floyd_l[k][j] < self.m_floyd_l[i][j]:
                             self.m_floyd_l[i][j] = self.m_floyd_l[i][k] + self.m_floyd_l[k][j]
                             self.m_floyd_p[i][j] = self.m_floyd_p[k][j]
+                    if i == j and self.m_floyd_l[i][j] < 0:
+                        self.circuit = True
 
         for i in range(self.n_sommets):
             for j in range(self.n_sommets):
                 if self.m_floyd_l[i][j] == 10000:
                     self.m_floyd_l[i][j] = '*'
-
-    def circuit_detection(self):
-        """Detection de circuit"""
-
-        # Génération d'une matrice temporaire
-        tmp = copy.deepcopy(self.m_adjacence)
-        done = []
-        todo = [i for i in range(self.n_sommets)]
-        todo_prec = []
-        stop_condition = True
-        while stop_condition:
-            todo_prec.clear()
-            todo_prec = todo.copy()
-            for i, sommet in enumerate(todo):
-                pred = 0
-                for j in range(self.n_sommets):
-                    if tmp[j][sommet] == 1:
-                        pred += 1
-
-                if pred == 0:
-                    done.append(sommet)
-
-            for i, sommet in enumerate(done):
-                for j in range(self.n_sommets):
-                    tmp[j][sommet] = -1
-                    tmp[sommet][j] = -1
-
-            for i in done:
-                if i in todo:
-                    todo.remove(i)
-            stop_condition = not todo_prec == todo
-        if len(todo) > 0:
-            return True
-        else:
-            return False
 
     def path(self, start, end):
         """Calcul du chemin le plus court, à l'aide de l'alorithme de Floyd-Warshall"""
