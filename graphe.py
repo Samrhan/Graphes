@@ -7,7 +7,7 @@ class Graph:
 
     def __init__(self, _num_graph):
         self.num_graph = _num_graph
-        self.file_name = f"graphes/{self.num_graph}.txt"
+        self.file_name = f"graphes/B6_{self.num_graph}.txt"
 
         # Propriétés du graphe
         self.n_sommets = 0
