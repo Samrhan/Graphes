@@ -1,4 +1,4 @@
-from arc import Arc
+from B6_arc import Arc
 import copy
 
 

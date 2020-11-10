@@ -1,5 +1,5 @@
 import os
-from graphe import Graph
+from B6_graphe import Graph
 
 
 class Main:
