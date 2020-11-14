@@ -128,4 +128,4 @@ class Main:
 main = Main()
 
 # Decommenter cette ligne pour calculer les traces
-main.traces()
+# main.traces()
