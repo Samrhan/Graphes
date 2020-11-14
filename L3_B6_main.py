@@ -122,9 +122,10 @@ class Main:
                                     else:
                                         pretty_print += f'{sommet}'
                             print(pretty_print, file=file)
+                        print('\n', file=file)
 
 
 main = Main()
 
 # Decommenter cette ligne pour calculer les traces
-# main.traces()
+main.traces()

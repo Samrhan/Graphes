@@ -93,7 +93,7 @@ class Graph:
         for i in range(self.n_sommets):
             pretty_print += f"{i} "
             for j in range(self.n_sommets):
-                pretty_print += f"\t{_m[i][j]}"
+                pretty_print += f"\t{_m[i][j] if _m[i][j] != float('inf') else '*'}"
             pretty_print += '\n'
         return pretty_print
 
@@ -117,6 +117,9 @@ class Graph:
 
         # Algorithme de Floyd Warhsall
         for k in range(self.n_sommets):
+            if k != self.n_sommets - 1:
+                self.trace += f"\nétape {k}\nMatrice L : \n".title()
+                self.trace += self.stringify_mat(self.m_floyd_l) + '\nMatrice P : \n' + self.stringify_mat(self.m_floyd_p)
             for j in range(self.n_sommets):
                 for i in range(self.n_sommets):
                     if self.m_floyd_l[i][k] != float('inf') and self.m_floyd_l[k][j] != float('inf'):
@@ -150,9 +153,11 @@ class Graph:
         to_print += self.stringify_mat(self.m_adjacence)
         to_print += "\n\n----- Matrice des valeurs -----\n\n"
         to_print += self.stringify_mat(self.m_valeur)
-        to_print += "\n\n----- Floyd-Warshall Matrice L-----\n\n"
+        to_print += "\n\n----- Floyd-Warshall Execution-----\n\n"
+        to_print += self.trace
+        to_print += "\n\n----- Floyd-Warshall Matrice L Finale-----\n\n"
         to_print += self.stringify_mat(self.m_floyd_l)
-        to_print += "\n\n----- Floyd-Warshall Matrice P-----\n\n"
+        to_print += "\n\n----- Floyd-Warshall Matrice P Finale-----\n\n"
         to_print += self.stringify_mat(self.m_floyd_p)
         to_print += "\n\nIl y a un ou plusieurs circuits absorbants\n\n" if self.circuit else "\n\nIl n'y a pas de circuit absorbant\n\n"
         return to_print
