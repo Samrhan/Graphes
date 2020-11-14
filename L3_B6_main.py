@@ -1,5 +1,5 @@
 import os
-from B6_graphe import Graph
+from L3_B6_graphe import Graph
 
 
 class Main:
@@ -84,7 +84,7 @@ class Main:
 
         path = graph.path(start, end)
         pretty_print = "Chemin le plus court : "
-        if path == []:
+        if not path:
             pretty_print = "Il n'y a pas de chemin possible"
         else:
             for (i, sommet) in enumerate(path):
@@ -96,29 +96,35 @@ class Main:
 
     @staticmethod
     def get_graph_number():
-        return len(os.listdir('graphes'))
+        n = 0
+        for i in os.listdir():
+            if 'graphe' in i and '.txt' in i:
+                n += 1
+        return n
 
     def traces(self):
+        """ Affichage des traces dans des fichiers"""
         for i in range(self.get_graph_number()):
-            with open(f'traces/B6_{i + 1}.txt', 'w') as file:
+            with open(f'L3-B6-trace{i + 1}.txt', 'w') as file:
                 graph = Graph(i + 1)
                 print(graph, file=file)
-                if not graph.circuit :
-                    for i in range(graph.sommets):
-                        for j in range(graph.sommets):
-                            if i != graph.sommets - j - 1:
-                                path = graph.path(i, graph.sommets - j - 1)
-                                pretty_print = f"Chemin le plus court de {i} vers {graph.sommets - j - 1} : "
-                                if not path:
-                                    pretty_print = f"Il n'y a pas de chemin possible de {i} vers {graph.sommets - j - 1}"
-                                else:
-                                    for (i, sommet) in enumerate(path):
-                                        if sommet != path[-1]:
-                                            pretty_print += f'{sommet} => '
-                                        else:
-                                            pretty_print += f'{sommet}'
-                                print(pretty_print, file=file)
+                if not graph.circuit:
+                    for j in range(graph.sommets):
+                        for k in range(graph.sommets):
+                            path = graph.path(j, k)
+                            pretty_print = f"Chemin le plus court de {j} vers {k} : "
+                            if not path:
+                                pretty_print = f"Il n'y a pas de chemin possible de {j} vers {k}"
+                            else:
+                                for sommet in path:
+                                    if sommet != path[-1]:
+                                        pretty_print += f'{sommet} => '
+                                    else:
+                                        pretty_print += f'{sommet}'
+                            print(pretty_print, file=file)
 
 
 main = Main()
-main.traces()
+
+# Decommenter cette ligne pour calculer les traces
+# main.traces()

@@ -37,15 +37,19 @@
 Il n'y a pas de circuit absorbant
 
 
+Chemin le plus court de 0 vers 0 : 0
+Chemin le plus court de 0 vers 1 : 0 => 2 => 1
+Chemin le plus court de 0 vers 2 : 0 => 2
 Chemin le plus court de 0 vers 3 : 0 => 2 => 3
-Chemin le plus court de 2 vers 1 : 2 => 1
 Il n'y a pas de chemin possible de 1 vers 0
-Chemin le plus court de 1 vers 3 : 1 => 2 => 3
-Chemin le plus court de 2 vers 1 : 2 => 1
-Il n'y a pas de chemin possible de 1 vers 0
-Chemin le plus court de 2 vers 3 : 2 => 3
+Chemin le plus court de 1 vers 1 : 1
 Chemin le plus court de 1 vers 2 : 1 => 2
-Il n'y a pas de chemin possible de 1 vers 0
-Il n'y a pas de chemin possible de 3 vers 2
-Il n'y a pas de chemin possible de 3 vers 1
+Chemin le plus court de 1 vers 3 : 1 => 2 => 3
+Il n'y a pas de chemin possible de 2 vers 0
+Chemin le plus court de 2 vers 1 : 2 => 1
+Chemin le plus court de 2 vers 2 : 2
+Chemin le plus court de 2 vers 3 : 2 => 3
 Il n'y a pas de chemin possible de 3 vers 0
+Il n'y a pas de chemin possible de 3 vers 1
+Il n'y a pas de chemin possible de 3 vers 2
+Chemin le plus court de 3 vers 3 : 3
