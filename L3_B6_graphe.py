@@ -1,4 +1,4 @@
-from B6_arc import Arc
+from L3_B6_arc import Arc
 import copy
 
 
@@ -7,7 +7,7 @@ class Graph:
 
     def __init__(self, _num_graph):
         self.num_graph = _num_graph
-        self.file_name = f"graphes/B6_{self.num_graph}.txt"
+        self.file_name = f"L3-B6-graphe{self.num_graph}.txt"
 
         # Propriétés du graphe
         self.n_sommets = 0
@@ -24,6 +24,7 @@ class Graph:
 
         self.m_floyd_l = []
         self.m_floyd_p = []
+        self.trace = ''
 
         self.gen_m_adjacence()
         self.gen_m_valeur()
@@ -92,7 +93,7 @@ class Graph:
         for i in range(self.n_sommets):
             pretty_print += f"{i} "
             for j in range(self.n_sommets):
-                pretty_print += f"\t{_m[i][j]}"
+                pretty_print += f"\t{_m[i][j] if _m[i][j] != float('inf') else '*'}"
             pretty_print += '\n'
         return pretty_print
 
@@ -109,16 +110,19 @@ class Graph:
                     self.m_floyd_p[i].append(i)
                 else:
                     if self.m_floyd_l[i][j] == '*':
-                        self.m_floyd_l[i][j] = 10000
+                        self.m_floyd_l[i][j] = float('inf')  # représentation de l'infini en python
                 self.m_floyd_p[i].append('*')
         for i in self.l_arcs:
             self.m_floyd_p[i.init][i.fin] = i.init
 
         # Algorithme de Floyd Warhsall
         for k in range(self.n_sommets):
+            if k != self.n_sommets - 1:
+                self.trace += f"\nétape {k}\nMatrice L : \n".title()
+                self.trace += self.stringify_mat(self.m_floyd_l) + '\nMatrice P : \n' + self.stringify_mat(self.m_floyd_p)
             for j in range(self.n_sommets):
                 for i in range(self.n_sommets):
-                    if self.m_floyd_l[i][k] != 10000 and self.m_floyd_l[k][j] != 10000:
+                    if self.m_floyd_l[i][k] != float('inf') and self.m_floyd_l[k][j] != float('inf'):
                         if self.m_floyd_l[i][k] + self.m_floyd_l[k][j] < self.m_floyd_l[i][j]:
                             self.m_floyd_l[i][j] = self.m_floyd_l[i][k] + self.m_floyd_l[k][j]
                             self.m_floyd_p[i][j] = self.m_floyd_p[k][j]
@@ -127,7 +131,7 @@ class Graph:
 
         for i in range(self.n_sommets):
             for j in range(self.n_sommets):
-                if self.m_floyd_l[i][j] == 10000:
+                if self.m_floyd_l[i][j] == float('inf'):
                     self.m_floyd_l[i][j] = '*'
 
     def path(self, start, end):
@@ -149,9 +153,11 @@ class Graph:
         to_print += self.stringify_mat(self.m_adjacence)
         to_print += "\n\n----- Matrice des valeurs -----\n\n"
         to_print += self.stringify_mat(self.m_valeur)
-        to_print += "\n\n----- Floyd-Warshall Matrice L-----\n\n"
+        to_print += "\n\n----- Floyd-Warshall Execution-----\n\n"
+        to_print += self.trace
+        to_print += "\n\n----- Floyd-Warshall Matrice L Finale-----\n\n"
         to_print += self.stringify_mat(self.m_floyd_l)
-        to_print += "\n\n----- Floyd-Warshall Matrice P-----\n\n"
+        to_print += "\n\n----- Floyd-Warshall Matrice P Finale-----\n\n"
         to_print += self.stringify_mat(self.m_floyd_p)
         to_print += "\n\nIl y a un ou plusieurs circuits absorbants\n\n" if self.circuit else "\n\nIl n'y a pas de circuit absorbant\n\n"
         return to_print
